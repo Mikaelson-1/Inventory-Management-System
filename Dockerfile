@@ -18,8 +18,7 @@ COPY . .
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Expose port
+# Expose port (Railway will assign the actual port)
 EXPOSE 8000
 
-# Run gunicorn
-CMD ["gunicorn", "inventory_management.wsgi:application", "--bind", "0.0.0.0:8000"]
+# No CMD here - Railway's railway.toml startCommand will handle this
