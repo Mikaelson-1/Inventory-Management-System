@@ -1,8 +1,8 @@
 {
   "build": {
-    "dockerfile": "Dockerfile"
+    "python_version": "3.11"
   },
   "run": {
-    "command": "gunicorn inventory_management.wsgi:application --bind 0.0.0.0:$PORT"
+    "command": "gunicorn app:app --bind 0.0.0.0:$PORT"
   }
 }
