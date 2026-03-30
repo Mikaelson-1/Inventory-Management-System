@@ -29,9 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-xbnbp#3s@z_ibgni!0$$t
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']
-if os.environ.get('RAILWAY_STATIC_URL'):
-    ALLOWED_HOSTS.append(os.environ.get('RAILWAY_STATIC_URL'))
+ALLOWED_HOSTS = ['*']  # Railway will handle this automatically
 
 
 # Application definition
