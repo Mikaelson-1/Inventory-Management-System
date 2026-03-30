@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
+  <h2 class="text-2xl font-bold mb-4 text-bouesti-green">Stock Requests</h2>
+
+<table class="w-full bg-white shadow rounded text-sm">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="p-3">Item</th>
+      <th class="p-3">Quantity</th>
+      <th class="p-3">Requested By</th>
+      <th class="p-3">Status</th>
+      <th class="p-3">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for req in requests %}
+    <tr class="border-t">
+      <td class="p-3">{{ req.item.name }}</td>
+      <td class="p-3">{{ req.quantity }}</td>
+      <td class="p-3">{{ req.department.username }}</td>
+      <td class="p-3">
+        {% if req.status == "pending" %}
+          <span class="text-yellow-600 font-semibold">Pending</span>
+        {% elif req.status == "approved" %}
+          <span class="text-green-600 font-semibold">Approved</span>
+        {% elif req.status == "declined" %}
+          <span class="text-red-600 font-semibold">Declined</span>
+        {% endif %}
+      </td>
+      <td class="p-3">
+        {% if req.status == "pending" %}
+          <form method="post" action="{% url 'approve_request' req.id %}" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs">Approve</button>
+          </form>
+          <form method="post" action="{% url 'decline_request' req.id %}" class="inline ml-2">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Decline</button>
+          </form>
+        {% else %}
+          <span class="text-gray-500">No Action</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</div>
+{% endblock %}

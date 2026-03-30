@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Inventory List{% endblock %}
+{% block content %}
+
+<div class="flex justify-between mb-4">
+  <h1 class="text-2xl font-bold">Inventory Items</h1>
+  <a href="{% url 'item_create' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+    <i class="bi bi-plus-circle"></i> Add Item
+  </a>
+</div>
+
+<form method="get" class="mb-4">
+  <input type="text" name="q" placeholder="Search item name..." value="{{ search_query }}"
+         class="border px-4 py-2 rounded w-64 focus:outline-none focus:ring focus:ring-blue-200" />
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded ml-2">Search</button>
+</form>
+
+
+<a href="{% url 'export_items_excel' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-4 inline-block">
+  <i class="bi bi-file-earmark-excel"></i> Export to Excel
+</a>
+
+
+<table class="w-full bg-white rounded shadow">
+  <thead class="bg-gray-100 text-sm">
+    <tr>
+      <th class="p-3 text-left">Name</th>
+      <th class="p-3 text-left">Category</th>
+      <th class="p-3 text-left">Quantity</th>
+      <th class="p-3 text-left">Reorder Level</th>
+      <th class="p-3 text-left">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr class="border-t">
+      <td class="p-3">{{ item.name }}</td>
+      <td class="p-3">{{ item.category.name }}</td>
+      <td class="p-3">{{ item.quantity_in_stock }}</td>
+      <td class="p-3">{{ item.reorder_level }}</td>
+      <td class="p-3 space-x-2">
+        <a href="{% url 'item_edit' item.id %}" class="text-blue-600"><i class="bi bi-pencil-square"></i></a>
+        <a href="{% url 'item_delete' item.id %}" class="text-red-600" onclick="return confirm('Delete this item?')"><i class="bi bi-trash"></i></a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Traffic Congestion Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #007BFF; color: white; }
+        table { border-collapse: collapse; width: 100%; background-color: white; color: black; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        .badge { padding: 5px 10px; border-radius: 5px; color: white; }
+        .high { background-color: red; }
+        .moderate { background-color: orange; }
+        .low { background-color: green; }
+    </style>
+</head>
+<body>
+    <h1>Traffic Congestion Dashboard</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Temperature (°C)</th>
+                <th>Rain Chance (%)</th>
+                <th>Congestion Level</th>
+            </tr>
+        </thead>
+        <tbody id="data-table"></tbody>
+    </table>
+
+<script>
+  function render(data){
+    const tbody = document.getElementById("data-table");
+    tbody.innerHTML = "";
+
+    if (!Array.isArray(data) || data.length === 0){
+      tbody.innerHTML = `<tr><td colspan="4">No data yet. Insert rows into <code>weather</code> table.</td></tr>`;
+      return;
+    }
+
+    data.forEach(row => {
+      const level = (row.congestion_level || "Unknown").toLowerCase(); // high/moderate/low
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.city ?? ""}</td>
+        <td>${row.temperature ?? ""}</td>
+        <td>${row.rain_chance ?? ""}</td>
+        <td><span class="badge ${level}">${row.congestion_level || "Unknown"}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Prefer SSE for real-time push
+  if (!!window.EventSource) {
+    const es = new EventSource("/stream");
+    es.onmessage = (e) => {
+      try {
+        const payload = JSON.parse(e.data);
+        render(payload);
+      } catch (err) {
+        console.error("SSE parse error:", err);
+      }
+    };
+    es.onerror = (e) => {
+      console.error("SSE error:", e);
+      // Optional: fallback to polling if stream drops
+      // startPolling();
+    };
+  } else {
+    // Fallback (older browsers): poll every 4s
+    async function poll() {
+      try {
+        const res = await fetch("/data", { cache: "no-store" });
+        render(await res.json());
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    poll();
+    setInterval(poll, 4000);
+  }
+</script>
+
+
+</body>
+</html>

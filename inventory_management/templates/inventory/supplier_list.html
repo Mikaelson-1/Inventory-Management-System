@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Suppliers{% endblock %}
+{% block content %}
+
+<div class="flex justify-between mb-4">
+  <h1 class="text-2xl font-bold">Suppliers</h1>
+  <a href="{% url 'supplier_create' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+    <i class="bi bi-plus-circle"></i> Add Supplier
+  </a>
+</div>
+
+<table class="w-full bg-white rounded shadow text-sm">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="p-3 text-left">Name</th>
+      <th class="p-3 text-left">Contact</th>
+      <th class="p-3 text-left">Phone</th>
+      <th class="p-3 text-left">Email</th>
+      <th class="p-3 text-left">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for supplier in suppliers %}
+    <tr class="border-t">
+      <td class="p-3">{{ supplier.name }}</td>
+      <td class="p-3">{{ supplier.contact_person }}</td>
+      <td class="p-3">{{ supplier.phone }}</td>
+      <td class="p-3">{{ supplier.email }}</td>
+      <td class="p-3 space-x-2">
+        <a href="{% url 'supplier_edit' supplier.id %}" class="text-blue-600"><i class="bi bi-pencil-square"></i></a>
+        <a href="{% url 'supplier_delete' supplier.id %}" class="text-red-600" onclick="return confirm('Delete this supplier?')"><i class="bi bi-trash"></i></a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

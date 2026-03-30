@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}{{ role|title }} Dashboard{% endblock %}
+
+{% block content %}
+
+<h1 class="text-2xl font-semibold mb-6">
+  {% if role == "admin" %}
+    Admin Dashboard
+  {% elif role == "store_officer" %}
+    Store Officer Dashboard
+  {% elif role == "department_user" %}
+    Department Dashboard
+  {% else %}
+    Dashboard
+  {% endif %}
+</h1>
+
+
+{% if notifications %}
+  <div class="space-y-3 mb-6">
+    {% for note in notifications %}
+      <div x-data="{ show: true }" x-show="show"
+           class="relative rounded p-4 border transition-all"
+           :class="{
+             'bg-green-50 border-green-300 text-green-800': '{{ note.type }}' === 'success',
+             'bg-blue-50 border-blue-300 text-blue-800': '{{ note.type }}' === 'info',
+             'bg-yellow-50 border-yellow-300 text-yellow-800': '{{ note.type }}' === 'warning',
+             'bg-red-50 border-red-300 text-red-800': '{{ note.type }}' === 'danger'
+           }">
+        <button @click="show = false" class="absolute top-2 right-2 text-xl text-gray-500 hover:text-black">
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div class="flex space-x-2 items-start">
+          <i class="bi"
+             :class="{
+               'bi-check-circle-fill': '{{ note.type }}' === 'success',
+               'bi-info-circle-fill': '{{ note.type }}' === 'info',
+               'bi-exclamation-triangle-fill': '{{ note.type }}' === 'warning',
+               'bi-x-octagon-fill': '{{ note.type }}' === 'danger'
+             }"
+             class="text-xl mt-1"></i>
+          <div class="text-sm">
+            {{ note.message }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="bg-white p-4 rounded shadow">
+    <div class="flex justify-between">
+      <div>
+        <p class="text-sm text-gray-500">Total Products</p>
+        <h2 class="text-2xl font-bold text-blue-700">{{ total_items }}</h2>
+      </div>
+      <i class="bi bi-box-seam text-3xl text-blue-600"></i>
+    </div>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <div class="flex justify-between">
+      <div>
+        <p class="text-sm text-gray-500">Categories</p>
+        <h2 class="text-2xl font-bold text-green-700">{{ total_categories }}</h2>
+      </div>
+      <i class="bi bi-tags text-3xl text-green-600"></i>
+    </div>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <div class="flex justify-between">
+      <div>
+        <p class="text-sm text-gray-500">Suppliers</p>
+        <h2 class="text-2xl font-bold text-yellow-600">{{ total_suppliers }}</h2>
+      </div>
+      <i class="bi bi-truck text-3xl text-yellow-500"></i>
+    </div>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+  <div class="flex justify-between">
+    <div>
+      <p class="text-sm text-gray-500">Items Issued</p>
+      <h2 class="text-2xl font-bold text-orange-600">{{ total_issued }}</h2>
+    </div>
+    <i class="bi bi-box-arrow-up text-3xl text-orange-500"></i>
+  </div>
+</div>
+  <div class="bg-white p-4 rounded shadow">
+    <div class="flex justify-between">
+      <div>
+        <p class="text-sm text-gray-500">Users</p>
+        <h2 class="text-2xl font-bold text-red-700">{{ total_users }}</h2>
+      </div>
+      <i class="bi bi-person text-3xl text-red-600"></i>
+    </div>
+  </div>
+</div>
+
+<a href="{% url 'item_archive' %}" class="inline-flex items-center mt-6 text-white bg-red-600 px-4 py-2 rounded hover:bg-red-700">
+  <i class="bi bi-trash3 mr-2"></i> Recycle Bin
+</a>
+
+<h2 class="text-xl font-semibold mt-10 mb-4 text-red-700">🚨 Low Stock Alerts</h2>
+
+{% if low_stock_items %}
+<table class="w-full bg-white rounded shadow text-sm">
+  <thead class="bg-red-100">
+    <tr>
+      <th class="p-3 text-left">Item</th>
+      <th class="p-3 text-left">In Stock</th>
+      <th class="p-3 text-left">Reorder Level</th>
+      <th class="p-3 text-left">Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in low_stock_items %}
+    <tr class="border-t">
+      <td class="p-3">{{ item.name }}</td>
+      <td class="p-3 text-red-600 font-bold">{{ item.quantity_in_stock }}</td>
+      <td class="p-3">{{ item.reorder_level }}</td>
+      <td class="p-3">{{ item.category.name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="text-gray-500">All stock levels are okay 🎉</p>
+{% endif %}
+
+
+{% endblock %}

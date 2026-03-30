@@ -1,0 +1,37 @@
+<!-- templates/department/my_requests.html -->
+{% extends 'base.html' %}
+{% block title %}My Requests{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">My Requests</h1>
+
+<table class="w-full bg-white shadow rounded">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="p-3 text-left">Item</th>
+      <th class="p-3 text-left">Quantity</th>
+      <th class="p-3 text-left">Status</th>
+      <th class="p-3 text-left">Requested On</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in requests %}
+    <tr class="border-t">
+      <td class="p-3">{{ r.item.name }}</td>
+      <td class="p-3">{{ r.quantity }}</td>
+      <td class="p-3 capitalize text-sm font-semibold 
+        {% if r.status == 'approved' %}text-green-600
+        {% elif r.status == 'rejected' %}text-red-600
+        {% else %}text-yellow-600{% endif %}">
+        {{ r.status }}
+      </td>
+      <td class="p-3 text-gray-600">{{ r.created_at|date:"M d, Y H:i" }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="4" class="p-4 text-center text-gray-500">No requests found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

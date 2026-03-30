@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Item{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4">{{ action }} Inventory Item</h1>
+
+<form method="post" class="bg-white p-6 rounded shadow max-w-md">
+  {% csrf_token %}
+
+  <label class="block mb-2">Name</label>
+  <input type="text" name="name" value="{{ item.name|default:'' }}" class="w-full mb-4 border px-4 py-2 rounded" required>
+
+  <label class="block mb-2">Category</label>
+  <select name="category" class="w-full mb-4 border px-4 py-2 rounded" required>
+    {% for cat in categories %}
+      <option value="{{ cat.id }}" {% if item.category.id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+    {% endfor %}
+  </select>
+
+  <label class="block mb-2">Quantity</label>
+  <input type="number" name="quantity" value="{{ item.quantity_in_stock|default:0 }}" class="w-full mb-4 border px-4 py-2 rounded" required>
+
+  <label class="block mb-2">Reorder Level</label>
+  <input type="number" name="reorder_level" value="{{ item.reorder_level|default:5 }}" class="w-full mb-6 border px-4 py-2 rounded" required>
+
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">{{ action }}</button>
+  <a href="{% url 'item_list' %}" class="ml-4 text-gray-500 hover:underline">Cancel</a>
+</form>
+
+{% endblock %}

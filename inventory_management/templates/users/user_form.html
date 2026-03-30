@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} User{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4">{{ action }} User</h1>
+
+<form method="post" class="bg-white p-6 rounded shadow-md max-w-md">
+  {% csrf_token %}
+
+  <label class="block mb-2 text-sm">Username</label>
+  <input type="text" name="username" value="{{ user.username|default:'' }}" class="w-full border px-4 py-2 mb-4 rounded" required>
+
+  <label class="block mb-2 text-sm">Password {% if action == 'Edit' %}<span class="text-gray-400 text-sm">(Leave blank to keep current)</span>{% endif %}</label>
+  <input type="password" name="password" class="w-full border px-4 py-2 mb-4 rounded" {% if action == 'Create' %}required{% endif %}>
+
+  <label class="block mb-2 text-sm">Role</label>
+  <select name="role" class="w-full border px-4 py-2 mb-4 rounded" required>
+    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+    <option value="store_officer" {% if user.role == 'store_officer' %}selected{% endif %}>Store Officer</option>
+    <option value="department_user" {% if user.role == 'department_user' %}selected{% endif %}>Department User</option>
+  </select>
+
+  <label class="block mb-2 text-sm">Department</label>
+  <input type="text" name="department" value="{{ user.department|default:'' }}" class="w-full border px-4 py-2 mb-6 rounded">
+
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">{{ action }}</button>
+  <a href="{% url 'user_list' %}" class="ml-4 text-gray-500 hover:underline">Cancel</a>
+</form>
+
+{% endblock %}

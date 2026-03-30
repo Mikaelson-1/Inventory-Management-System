@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="p-6">
+  <h2 class="text-2xl font-bold text-bouesti-green mb-6">📊 Inventory Intelligence Dashboard</h2>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- LOW STOCK ITEMS -->
+    <div class="bg-white p-4 rounded shadow h-[350px]">
+      <h3 class="text-lg font-semibold text-red-600 mb-2">Low Stock Items</h3>
+      <canvas id="lowStockChart" class="w-full h-full"></canvas>
+    </div>
+
+    <!-- STOCK IN VS OUT -->
+    <div class="bg-white p-4 rounded shadow h-[350px]">
+      <h3 class="text-lg font-semibold text-blue-600 mb-2">Stock In vs Stock Out</h3>
+      <canvas id="stockFlowChart" class="w-full h-full"></canvas>
+    </div>
+
+    <!-- ITEMS PER CATEGORY -->
+    <div class="bg-white p-4 rounded shadow h-[350px]">
+      <h3 class="text-lg font-semibold text-green-600 mb-2">Items Per Category</h3>
+      <canvas id="categoryChart" class="w-full h-full"></canvas>
+    </div>
+
+    <!-- TOP REQUESTED ITEMS -->
+    <div class="bg-white p-4 rounded shadow h-[350px]">
+      <h3 class="text-lg font-semibold text-purple-600 mb-2">Top Requested Items</h3>
+      <canvas id="requestChart" class="w-full h-full"></canvas>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Low Stock
+  new Chart(document.getElementById('lowStockChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ low_stock_labels|safe }},
+      datasets: [{
+        label: 'Quantity Left',
+        data: {{ low_stock_values|safe }},
+        backgroundColor: 'rgba(239, 68, 68, 0.6)',
+        borderColor: 'rgba(239, 68, 68, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Stock Flow
+  new Chart(document.getElementById('stockFlowChart'), {
+    type: 'line',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [
+        {
+          label: 'Stock In',
+          data: {{ stock_in_data|safe }},
+          borderColor: 'rgba(34, 197, 94, 1)',
+          backgroundColor: 'rgba(34, 197, 94, 0.2)',
+          tension: 0.3
+        },
+        {
+          label: 'Stock Out',
+          data: {{ stock_out_data|safe }},
+          borderColor: 'rgba(59, 130, 246, 1)',
+          backgroundColor: 'rgba(59, 130, 246, 0.2)',
+          tension: 0.3
+        }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Items Per Category
+  new Chart(document.getElementById('categoryChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ category_labels|safe }},
+      datasets: [{
+        label: 'Total Items',
+        data: {{ category_counts|safe }},
+        backgroundColor: 'rgba(34, 197, 94, 0.6)',
+        borderColor: 'rgba(34, 197, 94, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Top Requested Items
+  new Chart(document.getElementById('requestChart'), {
+    type: 'doughnut',
+    data: {
+      labels: {{ item_labels|safe }},
+      datasets: [{
+        data: {{ item_counts|safe }},
+        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'],
+        borderWidth: 2
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+</script>
+{% endblock %}

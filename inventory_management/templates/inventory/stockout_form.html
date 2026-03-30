@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Issue Item{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4">Stock Out / Issue Item</h1>
+
+<form method="post" class="bg-white p-6 rounded shadow max-w-xl">
+  {% csrf_token %}
+
+  <label class="block mb-2">Department</label>
+  <input type="text" name="department" class="w-full mb-4 border px-4 py-2 rounded" required>
+
+  <label class="block mb-2">Item</label>
+  <select name="item" class="w-full mb-4 border px-4 py-2 rounded" required>
+    {% for i in items %}
+    <option value="{{ i.id }}">{{ i.name }} ({{ i.quantity_in_stock }} in stock)</option>
+    {% endfor %}
+  </select>
+
+  <label class="block mb-2">Quantity</label>
+  <input type="number" name="quantity" class="w-full mb-6 border px-4 py-2 rounded" required>
+
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Issue Item</button>
+  <a href="{% url 'stockout_list' %}" class="ml-4 text-gray-500 hover:underline">Cancel</a>
+</form>
+
+{% endblock %}

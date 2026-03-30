@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Recycle Bin{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4">🗑️ Recycle Bin - Deleted Items</h1>
+
+{% if items %}
+  <table class="w-full bg-white rounded shadow text-sm">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="p-3 text-left">Item</th>
+        <th class="p-3 text-left">Category</th>
+        <th class="p-3 text-left">Stock</th>
+        <th class="p-3 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr class="border-t">
+        <td class="p-3">{{ item.name }}</td>
+        <td class="p-3">{{ item.category.name }}</td>
+        <td class="p-3">{{ item.quantity_in_stock }}</td>
+        <td class="p-3 space-x-2">
+          <a href="{% url 'item_restore' item.id %}" class="text-green-600 hover:underline">
+            <i class="bi bi-arrow-counterclockwise"></i> Restore
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="text-gray-500">No deleted items in recycle bin.</p>
+{% endif %}
+
+{% endblock %}
